@@ -1,5 +1,8 @@
 {
-    "name": "slack-cron",
+    "name": "qtsd/slack-cron",
+    "description": "Execute a command and send errors or output to slack (usefull for cron jobs).",
+    "homepage": "https://github.com/qtsd/slack-cron",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "SlackCron\\": "src/"
