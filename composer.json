@@ -10,6 +10,21 @@
         "symfony/yaml": "~3.0",
         "symfony/config": "~3.0",
         "symfony/console": "~3.0",
-        "symfony/process": "~3.0"
+        "symfony/process": "~3.0",
+        "symfony/filesystem": "~3.0",
+        "incenteev/composer-parameter-handler": "~2.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ]
+    },
+    "extra": {
+        "incenteev-parameters": {
+            "file": "conf/parameters.yml"
+        }
     }
 }

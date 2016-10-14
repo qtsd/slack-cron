@@ -1,2 +1,4 @@
+composer.lock
 nbproject/
 vendor/
+conf/parameters.yml

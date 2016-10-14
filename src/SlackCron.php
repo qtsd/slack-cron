@@ -7,6 +7,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 class SlackCron
@@ -17,15 +18,26 @@ class SlackCron
     {
         // config
         try {
+            // check if file exists
+            $fs = new Filesystem();
+            $configPath = __DIR__.'/../conf/parameters.yml';
+            
+            if (!$fs->exists($configPath)) {
+                throw new Exception("File $configPath could not be found.");
+            }
+            
+            // process config
             $processor = new Processor();
-            $configDatas = Yaml::parse(file_get_contents(__DIR__.'/../conf/config.yml'));
+            $configDatas = Yaml::parse(file_get_contents($configPath));
             
             $config = $processor->processConfiguration(
                 new SlackCronConfiguration(),
                 array($configDatas)
             );
             
-            self::$slackUrl = $config['slack_webhook_url'];
+            // store params
+            $params = $config['parameters'];
+            self::$slackUrl = $params['slack_webhook_url'];
             
         } catch (Exception $e) {
             $output = new ConsoleOutput();

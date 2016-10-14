@@ -14,14 +14,18 @@ class SlackCronConfiguration implements ConfigurationInterface
         
         $rootNode
             ->children()
-                ->scalarNode('slack_webhook_url')
+                ->arrayNode('parameters')
                     ->isRequired()
-                    ->validate()
-                    ->ifTrue(function ($s) {
-                        return filter_var($s, FILTER_VALIDATE_URL) == false;
-                    })->thenInvalid('invalid url')
+                    ->children()
+                        ->scalarNode('slack_webhook_url')
+                            ->isRequired()
+                            ->validate()
+                            ->ifTrue(function ($s) {
+                                return filter_var($s, FILTER_VALIDATE_URL) == false;
+                            })->thenInvalid('invalid url')
+                        ->end()
+                    ->end()
                 ->end()
-            ->end()
         ;
 
         return $treeBuilder;
