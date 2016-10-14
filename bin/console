@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+use Composer\Autoload\ClassLoader;
+use SlackCron\SlackCron;
+
+ini_set('display_errors', 1);
+
+/**
+ * @var ClassLoader $loader
+ */
+$loader = require_once __DIR__.'/../vendor/autoload.php';
+
+$application = new SlackCron();
