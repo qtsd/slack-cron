@@ -57,27 +57,32 @@ class RunCommand extends Command
         $host = gethostname();
         $cwd = $process->getWorkingDirectory();
         
-        $text = "*$user@$host:$cwd$* $command\n";
+        $text = "*$user@$host:$cwd$* $command\n>>>";
         
         // output
         if (!$process->isSuccessful()) {
             $exitCode = $process->getExitCodeText();
-            $output = trim($process->getErrorOutput(), "\n");
-            $text .= "> `$exitCode`\n";
+            $text .= "`$exitCode`\n";
+            $output = $process->getErrorOutput();
         } else {
-            $output = trim($process->getOutput(), "\n");
+            $output = $process->getOutput();
         }
         
-        $output = str_replace("\n", "\n>*>* ", $output);
-        $text .= "> *>* _$output _";
+        $lines = explode(PHP_EOL, $output);
+        foreach ($lines as $line) {
+            if (strlen($line)) {
+                $text .= "*>* $line\n";
+            }
+        }
         
         // web hook
-        $payload = json_encode(array(
-            'channel' => '@quent',
-            'text' => $text
-        ));
-        
-        $process = new Process("curl -X POST --data-urlencode 'payload=$payload' $slackUrl");
-        $process->run();
+        if (!empty($exitCode) || strlen($output)) {
+            $payload = json_encode(array(
+                'text' => $text
+            ));
+
+            $process = new Process("curl -X POST --data-urlencode 'payload=$payload' $slackUrl");
+            $process->run();
+        }
     }
 }
